@@ -3,13 +3,14 @@ import { promisify } from "util";
 import { exec as execSync } from "child_process";
 const exec = promisify(execSync);
 
-const { OPENAI_KEY, USE_GPT4 } = process.env;
+const { OPENAI_API_KEY, USE_GPT4 } = process.env;
 
 async function execWithStdIn(command: string, stdin: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const child = execSync(command);
     let stdout = "";
     child.stdin?.write(stdin);
+    child.stdin?.end();
     child.stdout?.on("data", (data) => {
       stdout += data;
     });
@@ -24,7 +25,7 @@ async function execWithStdIn(command: string, stdin: string): Promise<string> {
 }
 
 async function getChatCompletion(messages: ChatCompletionRequestMessage[]) {
-  const openai = new OpenAIApi(new Configuration({ apiKey: OPENAI_KEY }));
+  const openai = new OpenAIApi(new Configuration({ apiKey: OPENAI_API_KEY }));
   const {
     data: {
       choices: [result],
@@ -50,10 +51,12 @@ async function main() {
         'The above is the result of `git diff`. Please provide a commit message, adhering to "conventional commits" for this change',
     },
   ]);
+  console.debug(response);
   const commitMsg = response.result.message?.content.trim();
   if (!commitMsg) {
     throw new Error("No commit message from GPT");
   }
+  console.debug(commitMsg);
   await execWithStdIn("git commit -F -", commitMsg);
 }
 
