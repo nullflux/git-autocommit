@@ -39,11 +39,15 @@ async function getChatCompletion(messages: ChatCompletionRequestMessage[]) {
 }
 
 async function main() {
-  const diff = await exec("git diff --staged");
+  const { stdout: diff } = await exec("git diff --staged");
+  if (!diff) {
+    console.info("No staged changes to commit");
+    process.exit(0);
+  }
   const response = await getChatCompletion([
     {
       role: "user",
-      content: diff.stdout,
+      content: diff,
     },
     {
       role: "user",
