@@ -51,12 +51,11 @@ async function main() {
         'The above is the result of `git diff`. Please provide a commit message, adhering to "conventional commits" for this change',
     },
   ]);
-  console.debug(response);
   const commitMsg = response.result.message?.content.trim();
   if (!commitMsg) {
     throw new Error("No commit message from GPT");
   }
-  console.debug(commitMsg);
+  console.info(`Committing with:\n\n ${commitMsg}`);
   await execWithStdIn("git commit -F -", commitMsg);
 }
 
