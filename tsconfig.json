@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2021",
-    "lib": ["ES2021"],
+    "lib": ["ES2021", "DOM"],
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
@@ -11,7 +11,8 @@
     "noUnusedParameters": true,
     "strict": true,
     "noImplicitReturns": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "outDir": "dist"
   },
   "include": ["src/**/*"]
 }
