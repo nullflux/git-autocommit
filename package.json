@@ -1,0 +1,19 @@
+{
+  "name": "git-autocommit",
+  "version": "1.0.0",
+  "description": "Use GPT to generate commit messages from a diff, and then commit it",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adam Weber",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^18.16.3",
+    "prettier": "^2.8.8",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "openai": "^3.2.1"
+  }
+}
