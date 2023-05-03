@@ -54,7 +54,7 @@ async function main() {
   if (!commitMsg) {
     throw new Error("No commit message from GPT");
   }
-  await execWithStdIn("git commit -a -F", commitMsg);
+  await execWithStdIn("git commit -F -", commitMsg);
 }
 
 main().catch((e) => console.error(e));
