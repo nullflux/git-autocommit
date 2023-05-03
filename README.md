@@ -46,6 +46,44 @@ Optionally, you can set the `USE_GPT4` environment variable to use the GPT-4 mod
 export USE_GPT4=true
 ```
 
+## Compiling the TypeScript code
+
+1. Compile the TypeScript code using the `npx` command:
+
+```
+npx tsc
+```
+
+This will generate the JavaScript output in the `dist` directory.
+
+## Executing the compiled code from another location
+
+1. Create a `bin.sh` script in a directory that is included in your `$PATH`. For example, you can create the script in `/usr/local/bin`:
+
+```
+sudo touch /usr/local/bin/git-autocommit
+sudo chmod +x /usr/local/bin/git-autocommit
+```
+
+2. Edit the `git-autocommit` script using your preferred text editor, such as `nano` or `vim`. Add the following content to the script:
+
+```sh
+#!/bin/sh
+node ~/code/git-autocommit/dist
+```
+
+Replace `~/code/git-autocommit` with the full path to your `git-autocommit` project directory. This script assumes that the compiled JavaScript output is in the `dist` directory inside the project directory.
+
+3. Save and exit the text editor.
+
+4. Now you can execute the `git-autocommit` tool from any location in your terminal by running:
+
+```
+git-autocommit
+```
+
+The tool will generate a commit message for your staged changes and commit them to your repository using the generated message.
+
 ## Usage
 
 1. Stage your changes in your Git repository using:
@@ -54,11 +92,7 @@ export USE_GPT4=true
 git add .
 ```
 
-2. Run the `git-autocommit` tool using `ts-node`:
-
-```
-ts-node src
-```
+2. Run `git-autocommit`
 
 The tool will generate a commit message for your staged changes and commit them to your repository using the generated message.
 
