@@ -1,16 +1,25 @@
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
-import { promisify } from "util";
-import { exec as execSync } from "child_process";
-const exec = promisify(execSync);
+import { exec } from "child_process";
 
 const { OPENAI_API_KEY, USE_GPT4 } = process.env;
 
-async function execWithStdIn(command: string, stdin: string): Promise<string> {
+/**
+ * Executes a shell command and returns the output as a Promise. Optionally accepts stdin input.
+ *
+ * @function
+ * @async
+ * @param {string} command - The shell command to execute.
+ * @param {string} [stdin] - Optional input to be passed to the command via stdin.
+ * @returns {Promise<string>} - A Promise that resolves with the command's stdout output.
+ */
+async function execHelper(command: string, stdin?: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const child = execSync(command);
+    const child = exec(command);
+    if (stdin) {
+      child.stdin?.write(stdin);
+      child.stdin?.end();
+    }
     let stdout = "";
-    child.stdin?.write(stdin);
-    child.stdin?.end();
     child.stdout?.on("data", (data) => {
       stdout += data;
     });
@@ -39,7 +48,7 @@ async function getChatCompletion(messages: ChatCompletionRequestMessage[]) {
 }
 
 async function main() {
-  const { stdout: diff } = await exec("git diff --staged");
+  const diff = await execHelper("git diff --staged");
   if (!diff) {
     console.info("No staged changes to commit");
     process.exit(0);
@@ -60,7 +69,7 @@ async function main() {
     throw new Error("No commit message from GPT");
   }
   console.info(`Committing with:\n\n ${commitMsg}`);
-  await execWithStdIn("git commit -F -", commitMsg);
+  await execHelper("git commit -F -", commitMsg);
 }
 
 main().catch((e) => console.error(e));
